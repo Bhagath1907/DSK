@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  /* Slate 900 - Dark */
+}
+
+/* Force Light Mode defaults for visibility */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global text color overrides removed to allow component-level control */
+
+/* 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #0f172a;
+}
+
+p,
+span,
+div {
+  color: #334155;
+}
+*/
+
+/* Helper to force white text on dark backgrounds - Deprecated, use utility classes */
+/*
+.text-on-dark {
+  color: #ffffff !important;
+}
+
+.text-on-dark p,
+.text-on-dark span {
+  color: #e2e8f0 !important;
+}
+*/
+
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.9);
+  /* More opaque for visibility */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  /* Nearly solid white */
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(226, 232, 240, 1);
+}

@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+supabase
+python-dotenv
+python-multipart
+email-validator
+crewai
+crewai-tools
+langchain-openai
