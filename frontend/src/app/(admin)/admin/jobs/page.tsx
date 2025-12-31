@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2, ExternalLink, Briefcase } from 'lucide-react';
+import { API_URL } from '@/lib/api-config';
 
 interface Job {
     id: number;
@@ -15,8 +16,6 @@ interface Job {
     is_active: boolean;
     created_at: string;
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
 export default function JobNotificationsPage() {
     const [jobs, setJobs] = useState<Job[]>([]);

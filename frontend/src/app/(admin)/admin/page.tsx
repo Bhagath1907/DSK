@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Users, Layers, Box, FileText, Activity } from 'lucide-react';
-// We'll fetch stats from the backend API we created
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/lib/api-config';
 import { createClient } from '@/lib/supabase/client';
 
 export default function AdminDashboard() {

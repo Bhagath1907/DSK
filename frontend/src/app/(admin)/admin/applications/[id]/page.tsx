@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
+import { API_URL } from '@/lib/api-config';
 
 export default function ApplicationDetailPage() {
     const { id } = useParams();
@@ -20,8 +21,7 @@ export default function ApplicationDetailPage() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) return;
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-            const res = await fetch(`${apiUrl}/admin/applications/${id}`, {
+            const res = await fetch(`${API_URL}/admin/applications/${id}`, {
                 headers: { 'Authorization': `Bearer ${session.access_token}` }
             });
 
@@ -48,8 +48,7 @@ export default function ApplicationDetailPage() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) return;
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-            const res = await fetch(`${apiUrl}/admin/applications/${id}`, {
+            const res = await fetch(`${API_URL}/admin/applications/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -191,9 +190,7 @@ export default function ApplicationDetailPage() {
 
                                                 try {
                                                     const { data: { session } } = await supabase.auth.getSession();
-                                                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-
-                                                    const res = await fetch(`${apiUrl}/admin/applications/${id}/document`, {
+                                                    const res = await fetch(`${API_URL}/admin/applications/${id}/document`, {
                                                         method: 'POST',
                                                         headers: { 'Authorization': `Bearer ${session?.access_token}` },
                                                         body: formData

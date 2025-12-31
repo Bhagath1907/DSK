@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Plus, Edit2, Trash2, Eye, EyeOff, Box, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { API_URL } from '@/lib/api-config';
 
 export default function ServicesPage() {
     const [services, setServices] = useState<any[]>([]);
@@ -40,8 +41,7 @@ export default function ServicesPage() {
                 return;
             }
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-            const res = await fetch(`${apiUrl}/services/${id}`, {
+            const res = await fetch(`${API_URL}/services/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${session.access_token}`

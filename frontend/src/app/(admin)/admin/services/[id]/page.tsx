@@ -10,6 +10,7 @@ import { Textarea } from '../../../../../components/ui/textarea';
 import FormBuilder, { FormField } from '@/components/form-builder/FormBuilder';
 import Link from 'next/link';
 import { sendJobNotification } from '@/components/JobAlertBell';
+import { API_URL } from '@/lib/api-config';
 
 export default function ServiceEditorPage({ params }: { params: Promise<{ id: string }> }) {
     // Unwrap params in newer Next.js
@@ -56,7 +57,7 @@ export default function ServiceEditorPage({ params }: { params: Promise<{ id: st
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) throw new Error("Not authenticated");
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/admin/upload-logo`, {
+            const res = await fetch(`${API_URL}/admin/upload-logo`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${session.access_token}`
@@ -131,8 +132,7 @@ export default function ServiceEditorPage({ params }: { params: Promise<{ id: st
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) throw new Error("Not authenticated");
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-            const endpoint = isNew ? `${apiUrl}/services` : `${apiUrl}/services/${id}`;
+            const endpoint = isNew ? `${API_URL}/services` : `${API_URL}/services/${id}`;
             const method = isNew ? 'POST' : 'PUT';
 
             const res = await fetch(endpoint, {

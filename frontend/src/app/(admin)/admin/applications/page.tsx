@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Filter, Eye, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { API_URL } from '@/lib/api-config';
 import {
     Dialog,
     DialogContent,
@@ -25,8 +26,7 @@ export default function ApplicationsPage() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) return;
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-            const url = new URL(`${apiUrl}/admin/applications`);
+            const url = new URL(`${API_URL}/admin/applications`);
 
             const res = await fetch(url.toString(), {
                 headers: { 'Authorization': `Bearer ${session.access_token}` }
@@ -49,9 +49,9 @@ export default function ApplicationsPage() {
 
     const updateStatus = async (id: number, status: string) => {
         const { data: { session } } = await supabase.auth.getSession();
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
-        await fetch(`${apiUrl}/admin/applications/${id}`, {
+
+        await fetch(`${API_URL}/admin/applications/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
