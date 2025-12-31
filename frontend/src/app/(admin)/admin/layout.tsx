@@ -48,8 +48,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin/applications', label: 'Applications', icon: FileText },
         { href: '/admin/services', label: 'Services', icon: Layers },
         { href: '/admin/categories', label: 'Categories', icon: Settings },
-        { href: '/admin/jobs', label: 'Job Alerts', icon: Bell },
-        { href: '/admin/users', label: 'Users', icon: Users },
     ];
 
     return (

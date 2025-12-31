@@ -6,9 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, ArrowLeft, Mail, Lock, User, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-
-// Use environment variable or fallback for dev
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/lib/api-config';
 
 export default function SignUpPage() {
     const [email, setEmail] = useState('');

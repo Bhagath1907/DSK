@@ -7,9 +7,7 @@ import { ArrowLeft, CheckCircle2, AlertCircle, Clock, FileText, Download, Loader
 import { Button } from '@/components/ui/button';
 import FormRenderer from '@/components/form-builder/FormRenderer';
 import Link from 'next/link';
-
-// Use backend URL logic for consistency with Admin
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/lib/api-config';
 
 export default function ServiceApplicationPage({ params }: { params: Promise<{ id: string }> }) {
     const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
