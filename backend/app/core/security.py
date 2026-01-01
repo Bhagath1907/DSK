@@ -34,21 +34,25 @@ async def get_current_admin(user=Depends(get_current_user)):
     try:
         # Check 'users' table for role. 
         uid = user.user.id
-        print(f"[DEBUG] Checking admin role for user ID: {uid}")
+        # print(f"[DEBUG] Checking admin role for user ID: {uid}")
         
-        response = supabase.table("users").select("role").eq("id", uid).single().execute()
+        # Use execute() instead of single() to avoid PGRST116 on missing rows
+        response = supabase.table("users").select("role").eq("id", uid).execute()
         
-        print(f"[DEBUG] DB Response: {response.data}")
+        # print(f"[DEBUG] DB Response: {response.data}")
         
-        if not response.data:
-            print(f"[DEBUG] No user data found in DB for ID: {uid}")
-            raise HTTPException(status_code=403, detail="User not found in database")
+        if not response.data or len(response.data) == 0:
+            print(f"[DEBUG] User {uid} not found in public.users table.")
+            # If user is authenticated but missing profile, deny access cleanly
+            raise HTTPException(status_code=403, detail="User profile not found. Please contact support.")
             
-        if response.data.get('role') != 'admin':
-            print(f"[DEBUG] User {uid} is not an admin. Access denied.")
+        user_role = response.data[0].get('role')
+        
+        if user_role != 'admin':
+            print(f"[DEBUG] User {uid} is not an admin. Role: {user_role}")
             raise HTTPException(status_code=403, detail="Admin privileges required")
         
-        print(f"[DEBUG] Admin check passed for user: {uid}")
+        # print(f"[DEBUG] Admin check passed for user: {uid}")
         return user
     except HTTPException:
         raise
