@@ -75,9 +75,23 @@ export default function WalletPage() {
                 return;
         }
 
-        // Redirect to Razorpay
-        window.open(paymentLink, '_blank');
-        setLoading(false);
+        // Store payment info for callback verification
+        const getUserAndRedirect = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                localStorage.setItem('pending_payment', JSON.stringify({
+                    planName,
+                    price,
+                    userId: user.id,
+                    timestamp: Date.now()
+                }));
+            }
+
+            // Redirect to Razorpay
+            window.location.href = paymentLink;
+        };
+
+        getUserAndRedirect();
     };
 
     return (

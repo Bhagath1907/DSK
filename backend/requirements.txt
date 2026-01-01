@@ -8,3 +8,4 @@ email-validator
 crewai
 crewai-tools
 langchain-openai
+razorpay
