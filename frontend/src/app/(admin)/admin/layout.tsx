@@ -10,6 +10,8 @@ import { DskLogo } from '@/components/ui/logo';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [userEmail, setUserEmail] = useState<string | null>(null);
     const pathname = usePathname();
     const router = useRouter();
@@ -17,31 +19,61 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     useEffect(() => {
         const checkAdmin = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                router.push('/login');
-                return;
-            }
+            try {
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-            setUserEmail(user.email ?? null);
+                if (authError || !user) {
+                    console.error("Admin Layout: No user found", authError);
+                    router.replace('/login'); // Middleware should handle this, but double safety
+                    return;
+                }
 
-            const { data } = await supabase
-                .from('users')
-                .select('role')
-                .eq('id', user.id)
-                .single();
+                setUserEmail(user.email ?? null);
 
-            if (data?.role !== 'admin') {
-                router.push('/dashboard');
+                // Fetch role directly
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('role')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error || data?.role !== 'admin') {
+                    console.warn(`Access denied for user ${user.id}. Role: ${data?.role}`);
+                    router.replace('/dashboard');
+                    return;
+                }
+
+                setIsAdmin(true);
+            } catch (err) {
+                console.error("Unexpected error in admin check:", err);
+                router.replace('/dashboard');
+            } finally {
+                setIsLoading(false);
             }
         };
+
         checkAdmin();
     }, [router, supabase]);
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        router.push('/login');
+        router.replace('/login');
     };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                    <p className="text-gray-400">Verifying access...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isAdmin) {
+        return null; // Will redirect in useEffect
+    }
 
     const navItems = [
         { href: '/admin', label: 'Overview', icon: LayoutDashboard },

@@ -31,23 +31,40 @@ export async function middleware(request: NextRequest) {
         }
     );
 
+    // Refresh session if expired - required for Server Components
+    // https://supabase.com/docs/guides/auth/server-side/nextjs
     const {
         data: { user },
     } = await supabase.auth.getUser();
 
-    // Protect dashboard and admin routes
-    const isProtectedRoute = request.nextUrl.pathname.startsWith("/dashboard") ||
-        request.nextUrl.pathname.startsWith("/admin");
+    const path = request.nextUrl.pathname;
 
+    // 1. Define Public Routes (No Login Required)
+    const isPublicRoute =
+        path === "/" ||  // Landing Page
+        path.startsWith("/login") ||
+        path.startsWith("/signup") ||
+        path.startsWith("/forgot-password") ||
+        path.startsWith("/auth/callback") || // Auth callbacks
+        path.startsWith("/api/public");      // Public APIs if any
+
+    // 2. Define Protected Routes (Login Required)
+    // In our "compulsory login" model, EVERYTHING is protected unless explicitly public.
+    const isProtectedRoute = !isPublicRoute;
+
+    // 3. Handle Redirects
     if (isProtectedRoute && !user) {
+        // Redirect to login if trying to access protected route without user
         const loginUrl = new URL("/login", request.url);
-        loginUrl.searchParams.set("next", request.nextUrl.pathname);
+        loginUrl.searchParams.set("next", path); // Remember where they wanted to go
         return NextResponse.redirect(loginUrl);
     }
 
-    // Redirect to dashboard if logged in and trying to access auth pages
-    if (['/login', '/signup', '/forgot-password'].includes(request.nextUrl.pathname) && user) {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (user) {
+        // If logged in and trying to access Auth pages, redirect to dashboard
+        if (['/login', '/signup', '/forgot-password'].includes(path)) {
+            return NextResponse.redirect(new URL("/dashboard", request.url));
+        }
     }
 
     return response;
@@ -55,6 +72,13 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         * - public assets (svg, png, jpg, etc)
+         */
         "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
     ],
 };

@@ -8,7 +8,7 @@ import time
 
 router = APIRouter()
 
-router = APIRouter()
+
 
 # --- Removed promote-to-admin endpoint for security ---
 
